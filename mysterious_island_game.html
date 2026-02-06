@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Mysterious Island - First Conditional Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .score-board {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .score-item {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .story-content {
+            padding: 40px;
+            min-height: 300px;
+        }
+
+        .story-text {
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .scene-image {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .question-box {
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 5px;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .sentence-builder {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .sentence-part {
+            color: #333;
+        }
+
+        input[type="text"] {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            border: 3px solid #667eea;
+            border-radius: 8px;
+            min-width: 200px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #f5576c;
+            box-shadow: 0 0 10px rgba(245, 87, 108, 0.3);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-hint {
+            background: #ffd93d;
+            color: #333;
+        }
+
+        .btn-hint:hover {
+            background: #ffed4e;
+            transform: translateY(-2px);
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 1.1em;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+
+        .hint-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #856404;
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .game-over h2 {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .final-message {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px 40px;
+            font-size: 1.2em;
+        }
+
+        .btn-restart:hover {
+            transform: scale(1.05);
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.5s;
+        }
+
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .choice-button {
+            background: white;
+            border: 3px solid #667eea;
+            color: #667eea;
+            padding: 20px;
+            text-align: left;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .choice-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateX(10px);
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .story-content {
+                padding: 20px;
+            }
+            
+            .sentence-builder {
+                font-size: 1em;
+            }
+            
+            input[type="text"] {
+                min-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🏝️ The Mysterious Island</h1>
+            <p>Complete the First Conditional sentences to survive!</p>
+            <div class="score-board">
+                <div class="score-item">❤️ Lives: <span id="lives">3</span></div>
+                <div class="score-item">⭐ Score: <span id="score">0</span></div>
+                <div class="score-item">📍 Scene: <span id="scene-number">1</span>/10</div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+        </div>
+
+        <div class="story-content" id="story-content">
+            <!-- Story content will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let gameState = {
+            lives: 3,
+            score: 0,
+            currentScene: 0,
+            hints: 3,
+            path: 'normal'
+        };
+
+        // Story scenes
+        const scenes = [
+            {
+                id: 0,
+                image: 'linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%)',
+                text: "Your plane crashes on a mysterious tropical island. You wake up on the beach, alone and confused. In the distance, you see smoke rising from the jungle.",
+                question: "What will you do?",
+                type: 'complete',
+                sentence: {
+                    start: "If I",
+                    blank: "follow",
+                    end: "the smoke, I will find help.",
+                    alternatives: ["go to", "walk to", "head to", "move to"]
+                },
+                correct: "You decide to follow the smoke into the jungle.",
+                incorrect: "Confused and scared, you wander aimlessly on the beach and waste precious daylight.",
+                nextCorrect: 1,
+                nextIncorrect: 2
+            },
+            {
+                id: 1,
+                image: 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
+                text: "You walk through the dense jungle following the smoke. After an hour, you reach a clearing with an old abandoned camp. There's a rusty machete and a water bottle.",
+                question: "What's your plan?",
+                type: 'complete',
+                sentence: {
+                    start: "If I",
+                    blank: "take",
+                    end: "the machete, I will be able to defend myself.",
+                    alternatives: ["grab", "pick up", "get", "collect"]
+                },
+                correct: "You take the machete. You feel safer now. The smoke continues deeper into the jungle.",
+                incorrect: "You hesitate and leave the machete behind. Bad choice!",
+                nextCorrect: 3,
+                nextIncorrect: 4
+            },
+            {
+                id: 2,
+                image: 'linear-gradient(135deg, #b92b27 0%, #1565c0 100%)',
+                text: "The sun is setting. You're still on the beach, tired and thirsty. You see some coconuts in a palm tree nearby.",
+                question: "Think carefully!",
+                type: 'complete',
+                sentence: {
+                    start: "If I",
+                    blank: "climb",
+                    end: "the tree, I will get coconuts for water.",
+                    alternatives: ["go up", "scale"]
+                },
+                correct: "You climb the tree carefully and get fresh coconuts! You drink the water and feel better.",
+                incorrect: "You try to climb but slip and hurt your ankle. You lose a life!",
+                nextCorrect: 5,
+                nextIncorrect: 5
+            },
+            {
+                id: 3,
+                image: 'linear-gradient(135deg, #134e5e 0%, #71b280 100%)',
+                text: "With the machete in hand, you continue through the jungle. You hear strange noises. Suddenly, you see footprints in the mud. They're fresh!",
+                question: "Someone else is here!",
+                type: 'complete',
+                sentence: {
+                    start: "If I",
+                    blank: "follow",
+                    end: "the footprints, I will find other survivors.",
+                    alternatives: ["track", "trace", "pursue"]
+                },
+                correct: "You follow the footprints quietly. They lead to a small village!",
+                incorrect: "You ignore the footprints and get lost deeper in the jungle.",
+                nextCorrect: 6,
+                nextIncorrect: 7
+            },
+            {
+                id: 4,
+                image: 'linear-gradient(135deg, #ec008c 0%, #fc6767 100%)',
+                text: "Without the machete, you struggle through thick vines. A wild boar suddenly charges at you!",
+                question: "Quick decision!",
+                type: 'complete',
+                sentence: {
+                    start: "If I",
+                    blank: "run",
+                    end: "away quickly, I will escape the boar.",
+                    alternatives: ["flee", "sprint", "race"]
+                },
+                correct: "You run fast and climb a tree. The boar gives up and leaves.",
+                incorrect: "You hesitate! The boar attacks! You lose a life!",
+                nextCorrect: 5,
+                nextIncorrect: 5
+            },
+            {
+                id: 5,
+                image: 'linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%)',
+                text: "Night falls. You're exhausted. You see a cave that could provide shelter for the night.",
+                question: "Where will you sleep?",
+                type: 'complete',
+                sentence: {
+                    start: "If I",
+                    blank: "sleep",
+                    end: "in the cave, I will be safe from rain and animals.",
+                    alternatives: ["rest", "stay"]
+                },
+                correct: "The cave is dry and safe. You sleep well and wake up refreshed!",
+                incorrect: "You sleep outside. It rains heavily. You wake up sick and lose a life!",
+                nextCorrect: 8,
+                nextIncorrect: 8
+            },
+            {
+                id: 6,
+                image: 'linear-gradient(135deg, #ee9ca7 0%, #ffdde1 100%)',
+                text: "Amazing! You find a village with friendly natives. They welcome you with food and shelter. The chief speaks some English.",
+                question: "The chief offers help!",
+                type: 'complete',
+                sentence: {
+                    start: "If the chief",
+                    blank: "helps",
+                    end: "me, I will reach the rescue boat.",
+                    alternatives: ["assists", "aids", "supports"]
+                },
+                correct: "The chief shows you a map to a rescue boat on the other side of the island!",
+                incorrect: "You struggle to communicate and the chief becomes suspicious.",
+                nextCorrect: 9,
+                nextIncorrect: 8
+            },
+            {
+                id: 7,
+                image: 'linear-gradient(135deg, #283048 0%, #859398 100%)',
+                text: "You're completely lost. Your supplies are running low. You see a river in the distance.",
+                question: "Water is life!",
+                type: 'complete',
+                sentence: {
+                    start: "If I",
+                    blank: "follow",
+                    end: "the river, I will find civilization.",
+                    alternatives: ["trace", "track", "go along"]
+                },
+                correct: "Smart! Rivers always lead somewhere. You find the village!",
+                incorrect: "You wander away from the river and get even more lost.",
+                nextCorrect: 6,
+                nextIncorrect: 8
+            },
+            {
+                id: 8,
+                image: 'linear-gradient(135deg, #4ca1af 0%, #c4e0e5 100%)',
+                text: "You've been on the island for three days. You see a boat far from the shore. This might be your only chance!",
+                question: "Your rescue depends on this!",
+                type: 'complete',
+                sentence: {
+                    start: "If I",
+                    blank: "light",
+                    end: "a fire, the boat will see the smoke.",
+                    alternatives: ["make", "start", "create", "build"]
+                },
+                correct: "You quickly gather dry wood and light a fire! The smoke rises high!",
+                incorrect: "You wave your arms but the boat is too far away. It doesn't see you!",
+                nextCorrect: 9,
+                nextIncorrect: 10
+            },
+            {
+                id: 9,
+                image: 'linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)',
+                text: "SUCCESS! The rescue boat sees your signal and comes to shore. The crew welcomes you aboard with blankets and food. You're saved!",
+                question: "Final lesson learned:",
+                type: 'complete',
+                sentence: {
+                    start: "If I",
+                    blank: "stay",
+                    end: "calm in danger, I will survive any situation.",
+                    alternatives: ["remain", "keep"]
+                },
+                correct: "Congratulations! You escaped the mysterious island!",
+                incorrect: "You made it anyway, but remember to stay calm next time!",
+                nextCorrect: 'win',
+                nextIncorrect: 'win'
+            },
+            {
+                id: 10,
+                image: 'linear-gradient(135deg, #000000 0%, #434343 100%)',
+                text: "The boat disappears over the horizon. You're still stuck on the island. Days turn into weeks...",
+                question: "One last chance!",
+                type: 'complete',
+                sentence: {
+                    start: "If I",
+                    blank: "build",
+                    end: "a raft, I will escape the island myself.",
+                    alternatives: ["make", "construct", "create"]
+                },
+                correct: "With determination, you build a raft and sail to safety! You're a survivor!",
+                incorrect: "You give up hope. Game Over.",
+                nextCorrect: 'win',
+                nextIncorrect: 'lose'
+            }
+        ];
+
+        // Initialize game
+        function startGame() {
+            gameState = {
+                lives: 3,
+                score: 0,
+                currentScene: 0,
+                hints: 3,
+                path: 'normal'
+            };
+            updateDisplay();
+            showScene(0);
+        }
+
+        // Update score display
+        function updateDisplay() {
+            document.getElementById('lives').textContent = gameState.lives;
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('scene-number').textContent = gameState.currentScene + 1;
+            document.getElementById('progress').style.width = ((gameState.currentScene + 1) / 11 * 100) + '%';
+        }
+
+        // Show a scene
+        function showScene(sceneId) {
+            if (sceneId === 'win') {
+                showEnding(true);
+                return;
+            }
+            if (sceneId === 'lose' || gameState.lives <= 0) {
+                showEnding(false);
+                return;
+            }
+
+            const scene = scenes[sceneId];
+            gameState.currentScene = sceneId;
+            updateDisplay();
+
+            const content = `
+                <div class="scene-image" style="background: ${scene.image}"></div>
+                <div class="story-text">${scene.text}</div>
+                <div class="question-box">
+                    <div class="question-text">${scene.question}</div>
+                    <div class="sentence-builder">
+                        <span class="sentence-part">${scene.sentence.start}</span>
+                        <input type="text" id="answer-input" placeholder="Type your answer..." autocomplete="off">
+                        <span class="sentence-part">${scene.sentence.end}</span>
+                    </div>
+                    <div class="button-container">
+                        <button class="btn-submit" onclick="checkAnswer()">✓ Submit Answer</button>
+                        <button class="btn-hint" onclick="showHint()">💡 Hint (${gameState.hints} left)</button>
+                    </div>
+                    <div id="feedback"></div>
+                </div>
+            `;
+
+            document.getElementById('story-content').innerHTML = content;
+            document.getElementById('answer-input').focus();
+            
+            // Allow Enter key to submit
+            document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+        }
+
+        // Check answer
+        function checkAnswer() {
+            const scene = scenes[gameState.currentScene];
+            const userAnswer = document.getElementById('answer-input').value.trim().toLowerCase();
+            const correctAnswers = [scene.sentence.blank, ...scene.sentence.alternatives];
+            
+            const isCorrect = correctAnswers.some(answer => userAnswer === answer.toLowerCase());
+            
+            const feedbackDiv = document.getElementById('feedback');
+            
+            if (isCorrect) {
+                gameState.score += 10;
+                feedbackDiv.className = 'feedback correct';
+                feedbackDiv.innerHTML = `
+                    <strong>✓ Excellent!</strong><br>
+                    ${scene.correct}<br><br>
+                    <button class="btn-submit" onclick="showScene(${scene.nextCorrect})">Continue Adventure →</button>
+                `;
+            } else {
+                gameState.lives -= 1;
+                feedbackDiv.className = 'feedback incorrect';
+                feedbackDiv.innerHTML = `
+                    <strong>✗ Not quite right!</strong><br>
+                    The correct answer was: <strong>${scene.sentence.blank}</strong><br>
+                    ${scene.incorrect}<br>
+                    You lost a life! ❤️<br><br>
+                    <button class="btn-submit" onclick="showScene(${scene.nextIncorrect})">Continue Anyway →</button>
+                `;
+            }
+            
+            updateDisplay();
+            document.getElementById('answer-input').disabled = true;
+        }
+
+        // Show hint
+        function showHint() {
+            if (gameState.hints <= 0) {
+                alert("No hints left!");
+                return;
+            }
+            
+            gameState.hints -= 1;
+            const scene = scenes[gameState.currentScene];
+            const feedbackDiv = document.getElementById('feedback');
+            
+            feedbackDiv.className = 'feedback hint-box';
+            feedbackDiv.innerHTML = `
+                <strong>💡 Hint:</strong><br>
+                The answer is a verb in the present simple form.<br>
+                First letter: <strong>${scene.sentence.blank[0].toUpperCase()}</strong><br>
+                Number of letters: <strong>${scene.sentence.blank.length}</strong>
+            `;
+            
+            document.querySelector('.btn-hint').textContent = `💡 Hint (${gameState.hints} left)`;
+        }
+
+        // Show ending
+        function showEnding(won) {
+            let message, emoji, color;
+            
+            if (won) {
+                message = `🎉 Congratulations! 🎉<br><br>You escaped the mysterious island!<br>Your survival skills with First Conditionals saved your life!`;
+                emoji = "🏆";
+                color = "#28a745";
+            } else {
+                message = `💀 Game Over 💀<br><br>You didn't survive the island...<br>Practice your First Conditionals and try again!`;
+                emoji = "😢";
+                color = "#dc3545";
+            }
+            
+            const content = `
+                <div class="game-over">
+                    <h2 style="color: ${color}">${emoji} ${won ? 'VICTORY!' : 'DEFEAT'} ${emoji}</h2>
+                    <div class="final-message">${message}</div>
+                    <div class="score-board" style="background: ${color}; color: white; display: inline-block; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+                        <div style="font-size: 1.5em;">Final Score: ${gameState.score} points</div>
+                        <div style="font-size: 1.2em; margin-top: 10px;">Lives Remaining: ${gameState.lives} ❤️</div>
+                    </div>
+                    <br>
+                    <button class="btn-restart" onclick="startGame()">🔄 Play Again</button>
+                </div>
+            `;
+            
+            document.getElementById('story-content').innerHTML = content;
+        }
+
+        // Start the game when page loads
+        window.onload = startGame;
+    </script>
+</body>
+</html>
